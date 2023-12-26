@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Counter App1</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <h1> App1 Counter </h1>
+    <h2> Python Backend + Kafka Messaging </h2>
+    <button id="increment-button"> Increment App1 Counter </button>
+    <p>App1 Counter Value: <span id="app1-counter-value">{{app1_counter_value}}</span></p>
+    <p>App2 Counter Value: <span id="app2-counter-value">{{app2_counter_value}}</span></p>
+</body>
+<script>
+    let app2_counter = document.getElementById("app2-counter-value")
+    function handleButtonClick() {
+        $.ajax({
+            type: "POST",
+            url: "/increment-app1-counter/",
+            success: function (response) {
+                $("#app1-counter-value").text(response.app1_counter_value)
+            },
+            error: function (error) {
+                console.error("Error:", error)
+            }
+        })
+    }
+    $("#increment-button").click(handleButtonClick);
+
+    function checkChange() {
+        $.ajax({
+            type: "GET",
+            url: "/",
+            success: function (response) {
+                console.log("success")
+
+                // Access the app2-counter-value element from the response's text content
+                const app2CounterValue = $(response).find("#app2-counter-value").text();
+
+                // Convert the text content to an integer (if applicable)
+                const app2CounterInt = parseInt(app2CounterValue);
+                const app2CurrentInt = parseInt(document.getElementById("app2-counter-value").innerText)
+
+                // console.log("App2 counter value (text):", app2CounterValue);
+                console.log("App2 counter value (integer):", app2CounterInt);
+                
+                // Refresh page if app2 counter value has changed
+                if (app2CounterInt !== app2CurrentInt) {
+                    console.log(`app2-counter-value has changed to ${app2CounterInt}`)
+                    window.location = window.location.href
+                }
+
+
+            },
+            error: function (error) {
+                console.log("error")
+                console.log(error)
+            }
+        })
+    }
+    setInterval("checkChange()", 10000)
+
+    // function checkApp2CounterValue() {
+    //     let value = document.getElementById("app2-counter-value").innerHTML
+    //     if (app2_counter !== value) {
+    //         console.log(`App2 Counter has changed to ${value}`)
+    //         app2_counter = value
+    //         // window.location = window.location.href
+    //     }
+    //     else {
+    //         console.log(value)
+    //         console.log(app2_counter)
+    //     }
+
+    // }
+    // setInterval("checkApp2CounterValue()", 2000)
+
+
+</script>
+
+</html>
