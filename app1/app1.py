@@ -19,13 +19,13 @@ APP1_COUNTER = 0
 APP2_COUNTER = 0
 
 KAFKA_CONFIG = configparser.ConfigParser()
-KAFKA_CONFIG.read(str(BASE_DIR / "kafka-config.ini"))
+KAFKA_CONFIG.read(str(BASE_DIR.parent / "kafka-config.ini"))
 
-BOOTSTRAP_SERVERS = KAFKA_CONFIG.get("kafka-global-host", "bootstrap_servers")
+BOOTSTRAP_SERVERS = KAFKA_CONFIG.get("kafka_global_host", "bootstrap_servers")
 BOOTSTRAP_SERVERS = [BOOTSTRAP_SERVERS]
 
-PRODUCE_TOPIC = KAFKA_CONFIG.get("kafka-topics", "produce_topic")
-CONSUME_TOPIC = KAFKA_CONFIG.get("kafka-topics", "consume_topic")
+PRODUCE_TOPIC = KAFKA_CONFIG.get("kafka_topics", "app1_topic")
+CONSUME_TOPIC = KAFKA_CONFIG.get("kafka_topics", "app2_topic")
 
 KAFKA_PRODUCER = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVERS)
 KAFKA_CONSUMER = KafkaConsumer(
@@ -65,10 +65,8 @@ async def increment_app1_counter():
 
 def consume_messages(consumer, topic):
     for message in consumer:
-        message_text = message.value.decode('utf-8')
-        print(
-            f"Received Message: {message_text}, from Topic: {topic}"
-        )
+        message_text = message.value.decode("utf-8")
+        print(f"Received Message: {message_text}, from Topic: {topic}")
         global APP2_COUNTER
         APP2_COUNTER = extract_app2_counter(message_text)
         try:
@@ -78,7 +76,7 @@ def consume_messages(consumer, topic):
 
 
 def extract_app2_counter(message: str):
-    return int(message.split(":")[1])
+    return int(message.split(": ")[-1])
 
 
 CONSUMER_THREAD = threading.Thread(

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Counter App2</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <h1> App2 Counter </h1>
+    <h2> Node.js Backend + Kafka Messaging </h2>
+    <button id="increment-button"> Increment App2 Counter </button>
+    <p>App2 Counter Value: <span id="app2_counter_id"><%= app2_counter_value %></span></p>
+    <p>App1 Counter Value: <span id="app1_counter_id"><%=app1_counter_value%></span></p>
+</body>
+<script>
+
+    function handleButtonClick() {
+        $.ajax({
+            type: "POST",
+            url: "/increment-app2-counter/",
+            success: function (response) {
+                $("#app2_counter_id").text(response.app2_counter_value)
+            },
+            error: function (error) {
+                console.error("Error:", error)
+            }
+        })
+    }
+    $("#increment-button").click(handleButtonClick);
+
+    function checkChange() {
+        $.ajax({
+            type: "GET",
+            url: "/",
+            success: function (response) {
+                console.log("success")
+
+                // Access the app2_counter_id element from the response's text content
+                const app1CounterValue = $(response).find("#app1_counter_id").text();
+
+                // Convert the text content to an integer (if applicable)
+                const app1CounterInt = parseInt(app1CounterValue);
+                const app1CurrentInt = parseInt(document.getElementById("app1_counter_id").innerText)
+
+                // console.log("App2 counter value (text):", app2CounterValue);
+                console.log("App1 counter value (integer):", app1CounterInt);
+                
+                // Refresh page if app2 counter value has changed
+                if (app1CounterInt !== app1CurrentInt) {
+                    console.log(`app1_counter_id has changed to ${app1CounterInt}`)
+                    window.location = window.location.href
+                }
+
+
+            },
+            error: function (error) {
+                console.log("error")
+                console.log(error)
+            }
+        })
+    }
+    setInterval("checkChange()", 10000)
+
+
+</script>
+
+</html>
