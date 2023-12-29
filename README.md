@@ -22,7 +22,7 @@ after that, run the following command:
 - Run python microservice (App1)
 `uvicorn app1:app --host localhost --port 8005`
 
-### Starting App1 (Python Backend)
+### Starting App2 (Node.js Backend)
 - Navigate to app2 folder
 `cd app2` or `cd ../app2` if you were in the path of app1 directory
 - Initialize the project
