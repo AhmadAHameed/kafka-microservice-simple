@@ -1,0 +1,6 @@
+configparser==6.0.0
+fastapi==0.105.0
+Jinja2==3.1.2
+kafka-python==2.0.2
+requests==2.31.0
+uvicorn==0.25.0
